@@ -5,6 +5,8 @@ import com.mqtt.utils.TlsHelpers
 import com.mqtt.utils.getOr
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions
 import java.util.*
+import javax.net.ssl.*
+import java.security.cert.X509Certificate;
 
 data class MqttOptions(
   val clientId: String,
