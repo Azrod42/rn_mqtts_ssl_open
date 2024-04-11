@@ -1,5 +1,6 @@
 import Foundation
 import CocoaMQTT
+import UIKit
 
 class MqttClient {
     private let eventEmitter: MqttEventEmitter
@@ -24,7 +25,7 @@ class MqttClient {
         self.client.willMessage = options.will?.toCocoaMqttMessage()
         self.client.keepAlive = options.keepaliveSec
         self.client.enableSSL = options.tls
-
+        self.client.allowUntrustCACertificate = true
         if options.tls {
             do {
                 try parseCertificate(options: options)
@@ -32,6 +33,8 @@ class MqttClient {
                 throw error
             }
         }
+        self.client.allowUntrustCACertificate = true
+        self.client.delegate = self
 
         self.client.didChangeState = { (_: CocoaMQTT, newState: CocoaMQTTConnState) in
             if newState == CocoaMQTTConnState.disconnected {
@@ -237,5 +240,45 @@ class MqttClient {
         sslSettings["kCFStreamSSLIsServer"] = NSNumber(value: false)
         sslSettings["kCFStreamSSLCertificates"] = [identity] as CFArray
         self.client.sslSettings = sslSettings
+    }
+}
+let myCert = "myCert"
+
+extension MqttClient: CocoaMQTTDelegate {
+    
+    func mqtt(_ mqtt: CocoaMQTT, didReceive trust: SecTrust, completionHandler: @escaping (Bool) -> Void) {
+        completionHandler(true)
+    }
+    func mqtt(_ mqtt: CocoaMQTT, didConnectAck ack: CocoaMQTTConnAck) {
+            if ack == .accept {}
+    }
+
+    func mqtt(_ mqtt: CocoaMQTT, didStateChangeTo state: CocoaMQTTConnState) {
+    }
+
+    func mqtt(_ mqtt: CocoaMQTT, didPublishMessage message: CocoaMQTTMessage, id: UInt16) {
+    }
+
+    func mqtt(_ mqtt: CocoaMQTT, didPublishAck id: UInt16) {
+    }
+    
+    func mqtt(_ mqtt: CocoaMQTT, didReceiveMessage message: CocoaMQTTMessage, id: UInt16 ) {
+        let name = NSNotification.Name(rawValue: "MQTTMessageNotification")
+        NotificationCenter.default.post(name: name, object: self, userInfo: ["message": message.string!, "topic": message.topic, "id": id])
+    }
+
+    func mqtt(_ mqtt: CocoaMQTT, didSubscribeTopics success: NSDictionary, failed: [String]) {
+    }
+
+    func mqtt(_ mqtt: CocoaMQTT, didUnsubscribeTopics topics: [String]) {
+    }
+
+    func mqttDidPing(_ mqtt: CocoaMQTT) {
+    }
+
+    func mqttDidReceivePong(_ mqtt: CocoaMQTT) {
+    }
+
+    func mqttDidDisconnect(_ mqtt: CocoaMQTT, withError err: Error?) {
     }
 }
