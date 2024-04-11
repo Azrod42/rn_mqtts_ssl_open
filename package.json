@@ -41,14 +41,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/return764/react-native-mqtt.git"
+    "url": "git+https://github.com/Azrod42/matts"
   },
-  "author": "yutao <yutao_return@qq.com> (https://github.com/return764)",
+  "author": "yutao <tom.sorabella@gmail.com> (https://github.com/Azrod42)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/return764/react-native-mqtt/issues"
+    "url": "https://github.com/Azrod42/matts/issues"
   },
-  "homepage": "https://github.com/return764/react-native-mqtt#readme",
+  "homepage": "https://github.com/Azrod42/matts#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
     "access": "public"
